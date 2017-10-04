@@ -2,8 +2,8 @@
 
 __all__ = [
     'WRADEX_DIR',
-    'WRADEX_CONF',
-    '_WRADEX_CONF',
+    'WRADEX_CONFIG',
+    '_WRADEX_CONFIG',
 ]
 
 # standard library
@@ -14,5 +14,5 @@ import wradex
 
 # local constants
 WRADEX_DIR   = Path('~', '.wradex').expanduser()
-WRADEX_CONF  = Path(WRADEX_DIR, 'config.yaml')
-_WRADEX_CONF = Path(*wradex.__path__, 'data', 'config.yaml')
+WRADEX_CONFIG  = Path(WRADEX_DIR, 'config.yaml')
+_WRADEX_CONFIG = Path(*wradex.__path__, 'data', 'config.yaml')
