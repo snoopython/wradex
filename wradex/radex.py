@@ -119,8 +119,8 @@ class RADEX(object):
         params.update({
             'moldata': self.moldata,
             'output': RADEX_OUTPUT,
-            'f_min': f_rest - 0.001*u.GHz,
-            'f_max': f_rest + 0.001*u.GHz,
+            'f_min': (f_rest-0.001*u.GHz).value,
+            'f_max': (f_rest+0.001*u.GHz).value,
         })
 
         # make gridded parameters
