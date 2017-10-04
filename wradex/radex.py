@@ -11,6 +11,7 @@ from collections import OrderedDict
 from copy import deepcopy
 from urllib.request import urlopen
 from itertools import product
+from pathlib import Path
 from subprocess import run, PIPE
 
 # dependent packages
@@ -40,9 +41,13 @@ MOLDATA_DIR   = config['moldata_dir']
 MOLDATA_URL   = config['moldata_url']
 MOLDATA_LIST  = config['moldata_list']
 
+RADEX_PATH    = str(Path(RADEX_PATH).expanduser())
+RADEX_OUTPUT  = str(Path(RADEX_OUTPUT).expanduser())
+RADEX_LOG     = str(Path(RADEX_LOG).expanduser())
+MOLDATA_DIR   = str(Path(MOLDATA_DIR).expanduser())
 for key, val in RADEX_PARAMS.items():
     num, unit = val.split()
-    RADEX_PARAMS.update({key: num*u.Unit(unit)})
+    RADEX_PARAMS.update({key: float(num)*u.Unit(unit)})
 
 # classes
 class RADEX(object):
@@ -69,14 +74,14 @@ class RADEX(object):
         }
 
         # download a moldat (*.dat) if it is not found
-        path = Path(MOLDATA_DIR, self.moldata)
+        path = Path(MOLDATA_DIR, self.moldata).expanduser()
         url  = '{}/{}'.format(MOLDATA_URL, self.moldata)
 
         if not path.exists():
             print('{} is not in the RADEX moldata direcrory'.format(self.moldata))
             print('--> downloading {} from the LAMDA website'.format(self.moldata))
             with urlopen(url) as data, path.open('w') as f:
-                f.write(data.read())
+                f.write(data.read().decode('utf-8'))
 
         # read a moldat and extract information
         with path.open() as f:
@@ -120,8 +125,8 @@ class RADEX(object):
         params.update({
             'moldata': self.moldata,
             'output': RADEX_OUTPUT,
-            'f_min': (f_rest-0.001*u.GHz).value,
-            'f_max': (f_rest+0.001*u.GHz).value,
+            'f_min': f_rest-0.001*u.GHz,
+            'f_max': f_rest+0.001*u.GHz,
         })
 
         # make gridded parameters
@@ -130,14 +135,14 @@ class RADEX(object):
         for i, key in enumerate(RADEX_PARAMS):
             unit = RADEX_IN_UNI[key]
             grid = grids[i].to(u.Unit(unit))
-            gparams.update({key: grid.value})
+            gparams.update({key: grid})
 
         # execute RADEX
-        shape = grids[0].shape
-        outputs = {key: np.zeros(shape) for key in RADEX_OUT_UNI}
-        for idx in product(*map(range, shape)):
-            params.update({key: val[idx] for key, val in gparams.items()})
-            output = self._calc_radex(params)
+        gshape = grids[0].shape
+        outputs = {key: np.zeros(gshape) for key in RADEX_OUT_UNI}
+        for idx in product(*map(range, gshape)):
+            eachgparams = {key: val[idx] for key, val in gparams.items()}
+            output = self._calc_radex({**params, **eachgparams})
             for key in RADEX_OUT_UNI:
                 outputs[key][idx] = output[key]
 
@@ -147,11 +152,11 @@ class RADEX(object):
 
         # remove redundancies of the params
         params = {**params, **gparams}
-        for key, val in RADEX_PARAMS.items():
-            if len(np.unique(val)) == 1:
-                params.update({key: np.unique(val)[0]})
+        for key in RADEX_PARAMS:
+            if len(np.unique(params[key])) == 1:
+                params.update({key: np.unique(params[key])[0]})
             else:
-                params.update({key: np.squeeze(val)})
+                params.update({key: np.squeeze(params[key])})
 
         # add units to the outputs
         for key, val in outputs.items():
@@ -203,9 +208,10 @@ class RADEX(object):
 
         return transitions
 
-    def _calc_radex(params):
-        radex_input = RADEX_INPUT.format(**params).encode('utf-8')
-        cp = run(RADEX_PATH, input=radex_input, stdout=PIPE, stderr=PIPE)
+    def _calc_radex(self, params):
+        self._remove_units(params)
+        inp = self.radex_input.format(**params).encode('utf-8')
+        cp = run(RADEX_PATH, input=inp, stdout=PIPE, stderr=PIPE)
 
         with open(RADEX_OUTPUT) as f:
             kwd = ''
@@ -223,8 +229,15 @@ class RADEX(object):
 
         return output
 
+    def _remove_units(self, params):
+        for key, val in params.items():
+            try:
+                params[key] = val.value
+            except AttributeError:
+                pass
+
     def __getattr__(self, name):
         return self.params[name]
 
     def __repr__(self):
-        return 'RADEX({})'.format(self.mol)
+        return 'RADEX({})'.format(self.molname)
