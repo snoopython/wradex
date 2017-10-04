@@ -1,1 +1,106 @@
 # config.yaml
+
+# radex path (just spacify 'radex' if radex is added to $PATH)
+radex_path: radex
+
+# default radex parameters
+radex_params:
+  T_kin:  100 K
+  n_H2:   1e3 cm^3
+  N_mol:  1e13 cm^-2
+  dV:     100 km/s
+  T_bg:   2.73 K
+
+# template of radex input with the Python format
+radex_input: |
+  {moldata}
+  {output}
+  {f_min:.3f} {f_max:.3f}
+  {T_kin:.3f}
+  1
+  H2
+  {n_H2:.3e}
+  {T_bg:.3f}
+  {N_mol:.3e}
+  {dV:.3f}
+  0
+
+radex_output: radex.out
+radex_log:    radex.log
+
+# radex input and output units
+radex_input_units:
+  f_min: GHz
+  f_max: GHz
+  T_kin: K
+  n_H2:  cm^-3
+  T_bg:  K
+  N_mol: cm^-2
+  dV:    km/s
+
+radex_output_units:
+  E_u:   K
+  freq:  GHz
+  wavel: um
+  T_ex:  K
+  T_r:   K
+  I:     K km s^-1
+  F:     erg s^-1 cm^-2
+
+# molecular data configs
+moldata_dir: ~/.wadex/radex/data
+moldata_url: http://home.strw.leidenuniv.nl/~moldata/datafiles
+moldata_list:
+  CO:      co.dat
+  13CO:    13co.dat
+  C17O:    c17o.dat
+  C18O:    c18o.dat
+  CS:      cs@lique.dat
+  HCl:     hcl.dat
+  OCS:     ocs@xpol.dat
+  SO:      so@lique.dat
+  SO2:     so2.dat
+  SiO:     sio.dat
+  29SiO:   29sio.dat
+  SiS:     sis.dat
+  SiC2:    o-sic2.dat
+  HCO+:    hco+@xpol.dat
+  H13CO+:  h13co+@xpol.dat
+  HC17O+:  hc17o+@xpol.dat
+  HC18O+:  hc18o+@xpol.dat
+  DCO+:    dco+@xpol.dat
+  N2H+:    n2h+@xpol.dat
+  HCS+:    hcs+@xpol.dat
+  HC3N:    hc3n.dat
+  HCN:     hcn.dat
+  H13CN:   h13cn.dat
+  HC15N:   hc15n.dat
+  HNC:     hnc.dat
+  p-C3H2:  p-c3h2.dat
+  o-C3H2:  o-c3h2.dat
+  p-H2O:   ph2o@daniel.dat
+  o-H2O:   oh2o@daniel.dat
+  p-H2CO:  ph2co-h2.dat
+  o-H2CO:  oh2co-h2.dat
+  OH:      oh.dat
+  e-CH3OH: e-ch3oh.dat
+  a-CH3OH: a-ch3oh.dat
+  p-NH3:   p-nh3.dat
+  o-NH3:   o-nh3.dat
+  p-NH2D:  p-nh2d.dat
+  a-NH2D:  a-nh2d.dat
+  HDO:     hdo.dat
+  p-H3O:   p-h3o+.dat
+  o-H3O:   o-h3o+.dat
+  HNCO:    hnco.dat
+  NO:      no.dat
+  CN:      cn.dat
+  CH3CN:   ch3cn.dat
+  O2:      o2.dat
+  HF:      hf.dat
+  p-H2S:   ph2s.dat
+  o-H2S:   oh2s.dat
+  p-H2CS:  ph2cs.dat
+  o-H2CS:  oh2cs.dat
+  OH+:     oh+.dat
+  C2H:     c2h_h2_e.dat
