@@ -19,13 +19,14 @@ import yaml
 import numpy as np
 from astropy import units as u
 
+# yaml is loaded as an ordered dict
 yaml.add_constructor(
     yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
     lambda loader, node: OrderedDict(loader.construct_pairs(node))
 )
 
 # local constants
-with wradex.WRADEX_CONF.open() as f:
+with wradex.WRADEX_CONFIG.open() as f:
     config = yaml.load(f)
 
 RADEX_PATH    = config['radex_path']
@@ -168,21 +169,21 @@ class RADEX(object):
         n_levels = int(f.readline())
         f.readline()
 
-        levels = {}
+        energy_levels = {}
         for i in range(n_levels):
             elems  = f.readline().split()
             energy = float(elems[1]) / u.cm
             weight = float(elems[2]) / u.dimensionless_unscaled
             level  = elems[3]
 
-            levels[i+1] = {'energy': energy, 'weight': weight, 'level': level}
+            energy_levels[i+1] = {'energy': energy, 'weight': weight, 'level': level}
 
-        return levels
+        return energy_levels
 
     def _get_transitions(self, f):
         kwd = ''
-        pattern = re.compile('radiative transitions', re.IGNORECASE)
-        while not pattern.search(kwd):
+        pat = re.compile('radiative transitions', re.IGNORECASE)
+        while not pat.search(kwd):
             kwd = f.readline()
 
         n_transitions = int(f.readline())
