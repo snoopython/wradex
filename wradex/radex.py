@@ -25,7 +25,7 @@ yaml.add_constructor(
 )
 
 # local constants
-with open(wradex.WRADEX_CONF) as f:
+with wradex.WRADEX_CONF.open() as f:
     config = yaml.load(f)
 
 RADEX_PATH    = config['radex_path']
@@ -68,17 +68,17 @@ class RADEX(object):
         }
 
         # download a moldat (*.dat) if it is not found
-        path = Path(MOLDATA_DIR, self.moldata):
+        path = Path(MOLDATA_DIR, self.moldata)
         url  = '{}/{}'.format(MOLDATA_URL, self.moldata)
 
         if not path.exists():
             print('{} is not in the RADEX moldata direcrory'.format(self.moldata))
             print('--> downloading {} from the LAMDA website'.format(self.moldata))
-            with urlopen(url) as data, open(path, 'w') as f:
+            with urlopen(url) as data, path.open('w') as f:
                 f.write(data.read())
 
         # read a moldat and extract information
-        with open(path) as f:
+        with path.open() as f:
             self._energy_levels = self._get_energy_levels(f)
             self._transitions   = self._get_transitions(f)
 
@@ -118,7 +118,7 @@ class RADEX(object):
         params.update(kwargs)
         params.update({
             'moldata': self.moldata,
-            'output': RADEX_OUTPUT
+            'output': RADEX_OUTPUT,
             'f_min': f_rest - 0.001*u.GHz,
             'f_max': f_rest + 0.001*u.GHz,
         })
