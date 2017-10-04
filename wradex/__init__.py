@@ -8,7 +8,7 @@ from .constants import *
 
 if not WRADEX_DIR.exists():
     WRADEX_DIR.mkdir()
-    shutil.copy(str(_WRADEX_CONF), str(WRADEX_DIR))
+    shutil.copy(str(_WRADEX_CONFIG), str(WRADEX_DIR))
 
 from .radex import *
 
