@@ -1,7 +1,7 @@
 # config.yaml
 
 # radex path (just spacify 'radex' if radex is added to $PATH)
-radex_path: radex
+radex_path: ~/.wradex/radex/bin
 
 # default radex parameters
 radex_params:
@@ -39,13 +39,16 @@ radex_input_units:
   dV:    km/s
 
 radex_output_units:
-  E_u:   K
-  freq:  GHz
-  wavel: um
-  T_ex:  K
-  T_r:   K
-  I:     K km s^-1
-  F:     erg s^-1 cm^-2
+  E_u:     K
+  freq:    GHz
+  wavel:   um
+  T_ex:    K
+  tau:     dimensionless
+  T_r:     K
+  pop_up:  dimensionless
+  pop_low: dimensionless
+  I:       K km s^-1
+  F:       erg s^-1 cm^-2
 
 # molecular data configs
 moldata_dir: ~/.wadex/radex/data
