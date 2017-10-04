@@ -13,6 +13,6 @@ from pathlib import Path
 import wradex
 
 # local constants
-WRADEX_DIR   = Path('~', 'wradex').expanduser()
+WRADEX_DIR   = Path('~', '.wradex').expanduser()
 WRADEX_CONF  = Path(WRADEX_DIR, 'config.yaml')
 _WRADEX_CONF = Path(*wradex.__path__, 'data', 'config.yaml')
