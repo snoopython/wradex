@@ -1,7 +1,7 @@
 # config.yaml
 
 # radex path (just spacify 'radex' if radex is added to $PATH)
-radex_path: ~/.wradex/radex/bin
+radex_path: ~/.wradex/radex/bin/radex
 
 # default radex parameters
 radex_params:
