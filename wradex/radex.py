@@ -225,7 +225,10 @@ class RADEX(object):
 
             output = {}
             for i, key in enumerate(RADEX_OUT_UNI):
-                output[key] = float(elems[i+3])
+                try:
+                    output[key] = float(elems[i+3])
+                except:
+                    output[key] = np.nan
 
         return output
 
