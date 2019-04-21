@@ -1,0 +1,22 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+jupyter = "*"
+ipython = "*"
+twine = "*"
+
+[packages]
+numpy = "*"
+scipy = "*"
+astropy = "*"
+pyyaml = "*"
+matplotlib = "*"
+
+[requires]
+python_version = "3.7"
+
+[scripts]
+jupyter = "jupyter notebook"
