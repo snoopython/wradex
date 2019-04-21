@@ -51,7 +51,7 @@ radex_output_units:
   F:       erg s^-1 cm^-2
 
 # molecular data configs
-moldata_dir: ~/.wadex/radex/data
+moldata_dir: ~/.wradex/radex/data
 moldata_url: http://home.strw.leidenuniv.nl/~moldata/datafiles
 moldata_list:
   CO:      co.dat
