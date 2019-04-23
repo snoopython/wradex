@@ -6,6 +6,7 @@ __all__ = [
 
 # standard library
 import os
+import sys
 import re
 from collections import OrderedDict
 from copy import deepcopy
@@ -19,6 +20,10 @@ import wradex
 import yaml
 import numpy as np
 from astropy import units as u
+if 'ipykernel' in sys.modules:
+    from tqdm import tqdm_notebook as tqdm
+else:
+    from tqdm import tqdm
 
 # yaml is loaded as an ordered dict
 class OrderedLoader(yaml.Loader):
@@ -146,8 +151,9 @@ class RADEX(object):
 
         # execute RADEX
         gshape = grids[0].shape
+        length = np.prod(gshape)
         outputs = {key: np.zeros(gshape) for key in RADEX_OUT_UNI}
-        for idx in product(*map(range, gshape)):
+        for idx in tqdm(product(*map(range, gshape)), total=length):
             eachgparams = {key: val[idx] for key, val in gparams.items()}
             output = self._calc_radex({**params, **eachgparams})
             for key in RADEX_OUT_UNI:
