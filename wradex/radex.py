@@ -21,14 +21,21 @@ import numpy as np
 from astropy import units as u
 
 # yaml is loaded as an ordered dict
-yaml.add_constructor(
-    yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
-    lambda loader, node: OrderedDict(loader.construct_pairs(node))
-)
+class OrderedLoader(yaml.Loader):
+    tag = yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        def constructor(loader, node):
+            return OrderedDict(loader.construct_pairs(node))
+
+        self.add_constructor(self.tag, constructor)
+
 
 # local constants
 with wradex.WRADEX_CONFIG.open() as f:
-    config = yaml.load(f)
+    config = yaml.load(f, Loader=OrderedLoader)
 
 RADEX_PATH    = config['radex_path']
 RADEX_PARAMS  = config['radex_params']
